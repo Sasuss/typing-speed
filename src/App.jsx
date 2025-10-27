@@ -1,5 +1,6 @@
 import Timer from "./components/Timer"
 import { useState } from "react"
+import wordList from "./components/WordList";
 
 function App() {
   const [butswitch, setButSwitch] = useState(false);
@@ -7,16 +8,12 @@ function App() {
     setButSwitch(!butswitch);
     console.log(butswitch);
   }
-
-  const wordList = [
-    "tung", "sahur", "sigma", "brainrot", "didi", "john", "pork", "hawk", "tuah",
-    "niche", "khaby", "lame", "vaculik", "cago", "gyat", "skibidi", "toilet",
-    "fanum", "tax", "rizz", "goon", "mog", "ohio", "npc", "grindset", "alpha",
-    "beta", "gyatt", "fanumtax", "babygirl", "based", "cringe", "yap", "meow",
-    "goofy", "glizzy", "mewing", "delulu", "core", "aura", "aipack", "ohiomode",
-    "brokie", "fanumzone", "sigmaface", "blud", "skullemoji", "aiparrot", "npcwalk"
-  ];
-
+  /*
+          {wordList.map((word, index) => (
+            <span key={index} className="mx-1">{word}</span>
+          ))}
+  */
+  console.log(wordList);
 
   return (
     <>
@@ -25,7 +22,7 @@ function App() {
       <div className="min-h-screen min-w-screen flex flex-col items-center">
         <h1 className="mb-5">BRAINROT WPM Test</h1>
         <button onClick={ButtonSwitch} className="w-30">Didi</button>
-        <input type="text" name="simga" id="sigma" className="bg-white text-black mt-3 w-100 h-20" disabled={!butswitch}/>
+        <input type="text" placeholder="didi" name="inputField" id="inputField" className="bg-white text-black mt-3 w-100 h-20 text-2xl p-5" disabled={!butswitch}/>
         {butswitch && <Timer />}
       </div>
     </>
