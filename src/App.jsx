@@ -1,6 +1,6 @@
 import Timer from "./components/Timer"
-import { useState, useEffect, useRef, } from "react"
-//import wordList from "./components/WordList";
+import { useState, useEffect, } from "react"
+import wordList from "./components/WordList";
 
 function App() {
   const [butswitch, setButSwitch] = useState(false);
@@ -9,16 +9,9 @@ function App() {
     console.log(butswitch);
   }
   const [inputValue, setInputValue] = useState("");
-  const inputRef = useRef(null);
-
-
-  var word = "test";
-  useEffect(() => {
-    if (butswitch && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [butswitch]);
-  
+  console.log(wordList);
+  console.log(wordList.length);
+  const AllowedKeys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?Backspace";
   useEffect(() => {
     console.log(inputValue);
   }, [inputValue]);
@@ -27,11 +20,24 @@ function App() {
             <span key={index} className="mx-1">{word}</span>
           ))}
   */
-  //console.log(wordList);
   useEffect(() => {
-      addEventListener("keydown", (event) => {
-        console.log(event.key);
-      });
+      const KeyDown = (event) => {
+        //console.log(event.key);
+        if (AllowedKeys.includes(event.key)) {
+          if (event.key === "Backspace") {
+            setInputValue(prev => prev.slice(0, -1))
+          } else {
+            setInputValue(prev => prev + event.key);
+          }
+        } else {
+          return;
+        }
+        
+      }
+      window.addEventListener('keydown', KeyDown);
+      return () => {
+        window.removeEventListener('keydown', KeyDown);
+      }
 
   }, []);
 
@@ -43,10 +49,9 @@ function App() {
         <h1 className="mb-5">BRAINROT WPM Test</h1>
         <button onClick={ButtonSwitch} className="w-30">Didi</button>
         <div className="h-20 w-100 bg-white items-center flex mt-5 text-3xl pl-5">
-          <span className="text-black">{word}</span>
+          <span className="text-black">{inputValue}</span>
         </div>
-        
-        <input value={inputValue} onChange={e => setInputValue(e.target.value)} type="text" placeholder="didi" name="inputField" id="inputField" className="bg-white text-black mt-3 w-100 h-20 text-2xl p-5" disabled={!butswitch} ref={inputRef}/>
+
         {butswitch && <Timer />}
       </div>
     </>
