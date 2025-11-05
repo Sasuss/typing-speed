@@ -1,73 +1,69 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import wordList from "./WordList";
 
 function InputField() {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState([]);
   const [wordIndex, setWordIndex] = useState(0);
-  const [uniqueKey, setUniqueKey] = useState(0);
-  const AllowedKeys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?Backspace";
-  const [wordArray, setWordArray] = useState(() => wordList[0].split(""));
+  const [wordCounter, setWordCounter] = useState(0);
+  const wordArray = wordList[wordCounter].split(" ");
+  const AllowedKeys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/? ";
+  const [currentWord, setCurrentWord] = useState(wordList[0]);
+  const wordLength = currentWord.length;
+
+  useEffect(() => {
+
+    if (wordIndex === wordLength) {
+      setWordCounter((prev) => {
+        const nextIndex = prev + 1;
+        if (nextIndex < wordList.length) {
+          setCurrentWord(wordList[nextIndex]); 
+        }
+        return nextIndex;
+      });
+      setWordIndex(0);
+      setInputValue([]);
+    }
+  }, [wordIndex, wordLength]);
 
   useEffect(() => {
     const KeyDown = (event) => {
-      if (!AllowedKeys.includes(event.key)) return;
+      if (!AllowedKeys.includes(event.key) && event.key !== "Backspace") return;
 
       if (event.key === "Backspace") {
-        setWordIndex((prevIndex) => {
-          if (prevIndex === 0) return 0;
-          const newIndex = prevIndex - 1;
-
-          setWordArray((prevArr) => {
-            const newArr = [...prevArr];
-            const item = prevArr[newIndex];
-            
-            newArr[newIndex] = item.props.children; 
-
-            
-            return newArr;
-          });
-
-          setInputValue((prev) => prev.slice(0, -1));
-          return newIndex;
-        });
+        setWordIndex((prev) => (prev > 0 ? prev - 1 : 0));
+        setInputValue((prev) => prev.slice(0, -1));
         return;
       }
 
-      setWordArray((prevArray) => {
-        const newArray = [...prevArray];
-        const idx = wordIndex;
-        const currentChar = prevArray[idx];
+      const currentChar = currentWord[wordIndex];
+      const typedChar = event.key;
+      const isCorrect = typedChar === currentChar;
 
+      const newSpan = (
+        <span
+          key={wordIndex}
+          className={isCorrect ? "text-green-500" : "text-red-500 "}
+        >
+          {typedChar}
+        </span>
+      );
 
-        if (event.key === currentChar) {
-          newArray[idx] = (
-            <span className="text-green-500" key={"Key" + uniqueKey}>
-              {currentChar}
-            </span>
-          );
-        } else {
-          newArray[idx] = (
-            <span className="text-red-500" key={"Key" + uniqueKey}>
-              {currentChar}
-            </span>
-          );
-        }
-
-        return newArray;
-      });
-
-      setUniqueKey((prev) => prev + 1);
+      setInputValue((prev) => [...prev, newSpan]);
       setWordIndex((prev) => prev + 1);
-      setInputValue((prev) => prev + event.key);
     };
 
     window.addEventListener("keydown", KeyDown);
     return () => window.removeEventListener("keydown", KeyDown);
-  }, [AllowedKeys, uniqueKey, wordIndex]);
+  }, [wordIndex, wordArray]);
 
   return (
     <div className="h-20 w-100 bg-white items-center flex mt-5 text-3xl pl-5">
-      <span className="text-black">{wordArray}</span>
+      {/* napsané znaky */}
+      <span>{inputValue}</span>
+      {/* zbývající znaky */}
+      <span className="text-gray-400">
+        {wordArray.slice(wordIndex).join("")}
+      </span>
     </div>
   );
 }
