@@ -66,12 +66,10 @@ function InputField() {
   }, [wordIndex, wordArray, currentWord, wrongChars]);
 
   return (
-    <div className="h-20 w-100 bg-white items-center flex mt-5 text-3xl pl-5">
-      {/* napsané znaky */}
+    <div className="h-20 w-140 bg-white items-center flex mt-5 text-3xl pl-4">
       <span>{inputValue}</span>
-      {/* zbývající znaky */}
-      <span className="text-gray-400">
-        {wordArray.slice(wordIndex).join("")}
+      <span className="text-gray-400 truncate p-1">
+        {wordList.slice(wordIndex).join(" ")}
       </span>
     </div>
   );
